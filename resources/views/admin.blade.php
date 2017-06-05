@@ -96,7 +96,7 @@
                     	                    
                         <!-- Dashboard -->
                         <li class=""> 
-                            <a href="admin">
+                            <a href="{{ URL::to('/admin') }}">
                                 <i class="fa fa-dashboard"></i>
                                 <span class="title">Dashboard</span>
                             </a>

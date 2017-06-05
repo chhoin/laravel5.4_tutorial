@@ -8,12 +8,12 @@ use App\Tbl_status;
 /**
  * fb: Kim Chhoin
  * Tell: 0967676964
- *Date:05/17/2017
+ * Date:05/17/2017
  */
 class StatusMainController extends Controller
 {
 	
-	private $status, $date, $author, $limit  = 1;
+	private $status, $date, $author, $limit  = 5;
 	
 	public function __construct(Tbl_status $status){
 		$this->status = $status;
@@ -32,7 +32,7 @@ class StatusMainController extends Controller
     {
         $status = $this->status->orderBy('status_id', 'desc')->paginate($this->limit);
       
-        return view('admin/status/status', compact('status'));
+        return view('admin/status/main/status', compact('status'));
     }
 
     /**
@@ -42,7 +42,7 @@ class StatusMainController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.status.main.add_status');
     }
 
     /**
@@ -53,7 +53,19 @@ class StatusMainController extends Controller
      */
     public function store(Request $request)
     {
-        //
+    	$this->status->status_title			= $request->txtName;
+    	$this->status->status_description	= $request->txtDescription;
+    	$this->status->status_author		= 'Admin';
+    	$this->status->created_at 			= $this->date;
+    	$this->status->updated_at 			= $this->date;
+    	$this->status->save();
+    	
+    	$request->session()->flash('message','<div class="alert alert-success">
+                                              <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                              <strong>Intert Success!</strong>.
+                                            </div>');
+    	
+    	return back();
     }
 
     /**
@@ -64,7 +76,18 @@ class StatusMainController extends Controller
      */
     public function show($id)
     {
-        //
+      	$id = preg_replace ( '#[^0-9]#', '', $id );
+      	
+      	if($id != "" && !empty($id)) {
+      		
+      		$status = $this->status->where('status_id',$id)->first();
+      		
+      		if ($status){
+      			return view('admin.status.main.view_status', compact('status'));
+      		}
+      	}
+      	
+      	return redirect('main/status.html');
     }
 
     /**

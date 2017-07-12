@@ -13,7 +13,7 @@ use App\Tbl_status;
 class StatusMainController extends Controller
 {
 	
-	private $status, $date, $author, $limit  = 5;
+	private $status, $date, $author, $limit  = 2;
 	
 	public function __construct(Tbl_status $status){
 		$this->status = $status;
@@ -166,4 +166,30 @@ class StatusMainController extends Controller
     	} 
     	return redirect('main/status.html');
     }
+    
+    /*
+     * search
+     */
+    public function search(Request $request) {
+    	$key = $request->get('txtSearch');
+    	//die($key);
+    	if (!empty($key)) {
+    		//process search
+    		$status = $this->status
+    						->where('status_id', '=', $key )
+    						->orwhere('status_title', 'like', '%'.$key.'%' )
+    						->orwhere('status_description','like', '%'.$key.'%' )
+    						->orderBy('status_id', 'desc')
+    						->paginate($this->limit);
+    		
+    		
+    		return view('admin/status/main/status', compact('status'));
+    	} else {
+    		return redirect('main/status.html');
+    	}
+    }
+    
+    
+    
+    
 }

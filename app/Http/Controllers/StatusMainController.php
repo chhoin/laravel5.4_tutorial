@@ -98,7 +98,18 @@ class StatusMainController extends Controller
      */
     public function edit($id)
     {
-        //
+    	$id = preg_replace ( '#[^0-9]#', '', $id );
+    	 
+    	if($id != "" && !empty($id)) {
+    	
+    		$status = $this->status->where('status_id',$id)->first();
+    	
+    		if ($status){
+    			return view('admin.status.main.edit_status', compact('status'));
+    		}
+    	}
+    	 
+    	return redirect('main/status.html');
     }
 
     /**
@@ -108,9 +119,29 @@ class StatusMainController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+    	$id = preg_replace ( '#[^0-9]#', '',  $request->txtId );
+
+    	if ( !empty($id)) {
+    		//update process here
+    		$this->status->where('status_id', $id)->update([
+    				'status_title' 			=>  $request->txtName,
+    				'status_description' 	=>  $request->txtDescription,
+    				'status' 				=>  $request->txtStatus,
+    				'status_author' 		=>  "Admin",
+    				'updated_at' 			=>  $this->date
+    		]);
+    		
+    		$request->session()->flash('message','<div class="alert alert-success">
+                                              <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                              <strong>update Success!</strong>.
+                                            </div>');
+    		
+    		return back();
+    	}else {
+    		return redirect('main/status.html');
+    	}
     }
 
     /**
@@ -119,8 +150,20 @@ class StatusMainController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+    	$id = preg_replace ( '#[^0-9]#', '',  $id );
+    	
+    	if ( !empty($id)) {
+    		//delete action here 
+    		$this->status->where('status_id', $id)->update(['status' => '0']);
+    		
+    		$request->session()->flash('message','<div class="alert alert-success">
+                                              <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                              <strong>Delete Success!</strong>.
+                                            </div>');
+    		
+    	} 
+    	return redirect('main/status.html');
     }
 }

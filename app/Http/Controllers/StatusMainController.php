@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Tbl_status;
+use App\Http\Requests\StatusRequest;
 
 /**
  * fb: Kim Chhoin
@@ -51,7 +52,7 @@ class StatusMainController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StatusRequest $request)
     {
     	$this->status->status_title			= $request->txtName;
     	$this->status->status_description	= $request->txtDescription;
@@ -119,7 +120,7 @@ class StatusMainController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(StatusRequest $request)
     {
     	$id = preg_replace ( '#[^0-9]#', '',  $request->txtId );
 
